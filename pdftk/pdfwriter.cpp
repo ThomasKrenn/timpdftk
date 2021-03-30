@@ -7,23 +7,30 @@
 #include <cstdarg>
 #include <cstdio>
 #include <sstream> 
+#include <cstring>
+#include <string>
+#include <map>
+#include <fstream>
+#include <iostream>
 
 
 PdfWriter::PdfWriter(std::ostream* ostream)
-   : currentObject(1) 
+   : currentObject(1)
    , streampos(0)
    , catalog(0) // root
-    , _xmp(0)
-    ,_outputIntents(0)
+   , _pagecontent(0)
+   , _xmp(0)
+   , _outputIntents(0)
 {
-    stream = new Postream(ostream);
+   stream = new Postream(ostream);
 }
 
 
 int PdfWriter::addXrefEntry(int object, bool printostr)
 {
-    if (object < 0)
-        object = requestObject();
+   if (object < 0) {
+      object = requestObject();
+   }
 
     if (object >= xrefPositions.size())
         xrefPositions.resize(object + 1);
@@ -103,7 +110,7 @@ void PdfWriter::pageContent() {
    // os << "() Tj\n";     // Place the text string
 //   os << "<FEFF0061006200610062> Tj\n"; 
 //    os << "(\128\130) Tj\n";     // Place the text string
-    os << "<808182> Tj\n";     // Place the text string
+    os << "[<80>-50<81>-500<82>] TJ\n";     // Place the text string
     os << "ET";
 
     std::string stream = os.str();
@@ -235,9 +242,9 @@ void PdfWriter::addType3Font() {
         os << "endbfchar\n";
 
         os << "3 beginbfchar\n";
-        os << "<80> <20AC>\n";
-        os << "<81> <0020>\n";
-        os << "<82> <201A>\n";
+        os << "<80> <20AC> % euro\n";
+        os << "<81> <0020> % space \n";
+        os << "<82> <201A> % Single Low-9 Quotation Mark\n";
         os << "endbfchar\n";
 
 
@@ -276,13 +283,13 @@ void PdfWriter::addType3Font() {
 
     xprintf("<< /Type /Font\n"
         "/Subtype /Type3\n"
-        "/FontBBox [ 0 0 750 750 ]\n"
+   //     "/FontBBox [ 0 0 750 750 ]\n"
         "/FontMatrix [ 0.001 0 0 0.001 0 0 ]\n"
         "/CharProcs %d 0 R\n"
         "/Encoding %d 0 R\n"
         "/FirstChar 128\n"
         "/LastChar 130\n"
-        "/Widths [ 1000 1000 ]\n"
+        "/Widths [ 1000 1000 1000 ]\n"
         "/ToUnicode %d 0 R\n"
         ">>\n"
         "endobj\n"

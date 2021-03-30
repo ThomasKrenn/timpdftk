@@ -4,14 +4,14 @@
 // PDF Type3 tests
 //
 
+#include "pdfwriter.h"
+
 #include <cstdio>
 #include <cstring>
 #include <string>
 #include <map>
 #include <fstream>
 #include <iostream>
-
-#include "pdfwriter.h"
 
 
 static int
